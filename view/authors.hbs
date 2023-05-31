@@ -1,0 +1,228 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    ></script>
+    <style>
+      .title { text-decoration: none; } .alert { animation: fadeOut 3s linear
+      forwards; } @keyframes fadeOut { 0% { opacity: 1; } 90% { opacity: 1; }
+      100% { opacity: 0; display: none; } }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">CRUD</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="collapse navbar-collapse"
+          id="navbarSupportedContent"
+          class="d-flex align-items-center"
+        >
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                aria-current="page"
+                href="/books"
+              >Books</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                aria-current="page"
+                href="/authors"
+              >Author</a>
+            </li>
+          </ul>
+          {{#if isAuthenticated}}
+            <p class="m-2 me-4" style="color: gray;">Welcome, {{user.email}}</p>
+            <a href="/logout" class="btn btn-primary btn-sm mx-1">Logout</a>
+          {{else}}
+            <a href="/login" class="btn btn-primary btn-sm mx-1">Login</a>
+            <a href="/register" class="btn btn-primary btn-sm mx-1">Register</a>
+          {{/if}}
+        </div>
+      </div>
+    </nav>
+
+    <!-- Toast Massages -->
+    <div class="container">
+      {{#if serverError}}
+        <div id="serverError" class="position-fixed bottom-0 end-0 p-3">
+          <div
+            class="toast show"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            data-bs-autohide="true"
+            data-bs-delay="3000"
+          >
+            <div class="toast-header">
+              <strong class="me-auto">Error</strong>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="toast-body">
+              {{serverError}}
+            </div>
+          </div>
+        </div>
+      {{/if}}
+      {{#if serverSuccess}}
+        <div id="serverSuccess" class="position-fixed bottom-0 end-0 p-3">
+          <div
+            class="toast show"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            data-bs-autohide="true"
+            data-bs-delay="3000"
+          >
+            <div class="toast-header">
+              <strong class="me-auto">Success</strong>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="toast-body">
+              {{serverSuccess}}
+            </div>
+          </div>
+        </div>
+      {{/if}}
+    </div>
+
+    <section class="container w-75 d-flex flex-wrap justify-content-center">
+      {{#if isAuthenticated}}
+
+        <div class="w-100 mt-4 d-flex justify-content-center">
+          <a href="/authors/add" class="btn btn-primary btn-sm">
+            <i
+              class="fa-sharp fa-solid fa-plus fa-sm"
+              style="color: #ffffff;"
+            ></i>
+            Add Author
+          </a>
+        </div>
+      {{/if}}
+      <div class="list-group w-100 mt-4">
+        {{#each author}}
+          <li class="list-group-item w-100 d-flex align-items-center">
+            <div class="w-50 d-flex align-items-center">
+              <div class="w-50"><a
+                  href="/author/{{this.id}}"
+                  class="text-decoration-none text-dark"
+                ><h5>Name: {{this.name}}</h5></a></div>
+              <!--   <div class="w-50 d-flex fw-light"> Rs: {{this.prize}}</div>  -->
+            </div>
+            <div class="w-50 d-flex align-items-center">
+              <div class="w-50 d-flex"></div>
+              <div class="w-50 d-flex justify-content-end align-items-center">
+                {{#if ../isAuthenticated}}
+                  <div class="mx-1">
+                    <a
+                      href="/authors/update/{{this.id}}"
+                      class="btn btn-primary btn-sm mt-1"
+                    >
+                      <i
+                        class="fa-solid fa-pen fa-sm"
+                        style="color: #ffffff;"
+                      ></i>
+                      Edit
+                    </a>
+                  </div>
+                  <div class="mx-1">
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-sm mt-1"
+                      onclick="deleteAuthor('{{this.id}}')"
+                    >
+                      <i
+                        class="fa-solid fa-trash fa-sm"
+                        style="color: #ffffff;"
+                      ></i>
+                      Delete
+                    </button>
+
+                  </div>
+                {{/if}}
+
+              </div>
+            </div>
+          </li>
+        {{/each}}
+      </div>
+    </section>
+
+    <script
+      src="https://kit.fontawesome.com/9d7dbeda4d.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+
+      function deleteAuthor(authorId) { if (confirm("Are you sure you want to
+      delete this Author?")) { fetch('/authors/delete/' + authorId, { method:
+      'DELETE' }) .then(response => { if (response.redirected) {
+      console.log(response); window.location.href = response.url; // Redirect to
+      the authors page } else { console.log(response); // Handle other responses
+      if needed } }) .catch(error => { console.log(error); // Handle errors });
+      } } document.addEventListener('DOMContentLoaded', function() { var
+      errorToastElement = document.getElementById('serverError'); var
+      successToastElement = document.getElementById('serverSuccess'); if
+      (errorToastElement) { var errorToast = new
+      bootstrap.Toast(errorToastElement); errorToast.show(); } if
+      (successToastElement) { var successToast = new
+      bootstrap.Toast(successToastElement); successToast.show(); }
+      setTimeout(function() { if (errorToastElement) { var errorToast =
+      bootstrap.Toast.getInstance(errorToastElement); errorToast.hide(); } if
+      (successToastElement) { var successToast =
+      bootstrap.Toast.getInstance(successToastElement); successToast.hide(); }
+      }, 2500); });
+
+    </script>
+  </body>
+</html>
